@@ -1,9 +1,8 @@
 import cors from 'cors'
 import dotenv from 'dotenv'
 import express from 'express'
-import type { Request, Response } from 'express'
-import { createProxyMiddleware } from 'http-proxy-middleware'
-import { parseCorsOrigin } from './utils'
+import multer from 'multer'
+import { parseCorsOrigin, createDynamicProxyMiddleware } from './utils'
 
 dotenv.config()
 if (!process.env.PROXY_TARGET) {
@@ -21,6 +20,7 @@ try {
 }
 
 const app = express()
+const upload = multer()
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 
@@ -31,15 +31,24 @@ app.use(
   }),
 )
 
-const proxyMiddleware = createProxyMiddleware<Request, Response>({
-  target: process.env.PROXY_TARGET,
-  changeOrigin: true,
-  pathRewrite: {
-    '^/api': '',
-  },
-})
+app.use(
+  '/api/gobooking',
+  upload.any(),
+  createDynamicProxyMiddleware({
+    target: process.env.PROXY_TARGET,
+    pathRewrite: { '^/': '/ntume/' },
+  }),
+)
 
-app.use('/api', proxyMiddleware)
+app.use(
+  '/api/qrlock',
+  upload.any(),
+  createDynamicProxyMiddleware({
+    target: process.env.PROXY_TARGET_QRLOCK || '',
+    pathRewrite: { '^/': '/' },
+  }),
+)
+
 app.listen(3000, () => {
   console.log('Server is running on port 3000')
 })
