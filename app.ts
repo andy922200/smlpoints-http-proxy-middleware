@@ -31,12 +31,30 @@ app.use(
   }),
 )
 
+/* 測試 goBooking 客戶端頁面時使用 */
 app.use(
-  '/api/gobooking',
+  '/api/gobooking/client',
   upload.any(),
   createDynamicProxyMiddleware({
     target: process.env.PROXY_TARGET,
-    pathRewrite: { '^/': '/ntume/' },
+    changeOrigin: true,
+    pathRewrite: {
+      '^/ow': '/owner',
+      '^/': '/miczone/',
+    },
+  }),
+)
+
+/* 測試 goBooking 後台頁面時使用 */
+app.use(
+  '/api/gobooking/owner',
+  upload.any(),
+  createDynamicProxyMiddleware({
+    target: process.env.PROXY_TARGET,
+    changeOrigin: true,
+    pathRewrite: {
+      '^/': '/owner/',
+    },
   }),
 )
 
