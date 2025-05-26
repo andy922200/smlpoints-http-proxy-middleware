@@ -2,7 +2,8 @@ import cors from 'cors'
 import dotenv from 'dotenv'
 import express from 'express'
 import multer from 'multer'
-import { parseCorsOrigin, createDynamicProxyMiddleware } from './utils'
+
+import { createDynamicProxyMiddleware, parseCorsOrigin } from './utils'
 
 dotenv.config()
 if (!process.env.PROXY_TARGET) {

@@ -76,4 +76,4 @@ function createDynamicProxyMiddleware({
   })
 }
 
-export { parseCorsOrigin, createDynamicProxyMiddleware }
+export { createDynamicProxyMiddleware, parseCorsOrigin }
